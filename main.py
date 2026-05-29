@@ -28,11 +28,21 @@ statusLabel = ctk.CTkLabel(
     text_color="white"
 )
 
-textColor = "white"
+curStatus = "online" # idle, online, error
+
+if(curStatus == "idle"):
+    textColor = "white"
+    statText = "Idle"
+elif(curStatus == "online"):
+    textColor = "green"
+    statText = "Online"
+else:
+    textColor = "red"
+    statText = "Offline"
 
 curStatusLabel = ctk.CTkLabel(
     main,
-    text="Idle",
+    text=statText,
     font=("Arial", 20, "bold"),
     fg_color="transparent",  
     bg_color="black",
@@ -42,7 +52,7 @@ curStatusLabel = ctk.CTkLabel(
 
 bg_Label.place(x=0, y=0, relwidth=1, relheight=1)
 statusLabel.place(rely=1.0, x=10, y=-10, anchor="sw")
-curStatusLabel.place(rely=1.0, x=90, y=-10, anchor="sw")
+curStatusLabel.place(rely=1.0, x=83, y=-10, anchor="sw")
 
 
 
