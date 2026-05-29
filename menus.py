@@ -3,11 +3,11 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import messagebox
 
-tweaksFrame = None
+
 mapChangerFrame = None
 skinChangerFrame = None
 
-def setup(window):
+def showTweaks(window):
     global tweaksFrame, mapChangerFrame, skinChangerFrame
     
     tweaksFrame = ctk.CTkFrame(
@@ -34,8 +34,7 @@ def setup(window):
     )
     skinChangerFrame.place(x=200, y=0)
 
-def showTweaks(e):
-    tweaksFrame.lift()
+
 
 def showMapChanger(e):
     mapChangerFrame.lift()
