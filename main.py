@@ -1,3 +1,4 @@
+import winreg
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -5,6 +6,7 @@ import os
 from tkinter import messagebox
 import webbrowser
 import menus
+import json
 
 main = ctk.CTk()
 main.geometry("600x400")
@@ -19,6 +21,54 @@ if not os.path.exists("firstTimeRun.txt"):
     messagebox.showinfo("Warning", "This program is in early development and may contain bugs. Please report any issues to the developer.\nFurthermore, hes not resposible for any damage")
     with open("firstTimeRun.txt", "w") as f:
         pass
+
+def find_RL_epic():
+    possible_paths = [
+        r"SOFTWARE\Epic Games\EpicGamesLauncher",                  # 64-Bit Ort
+        r"SOFTWARE\WOW6432Node\Epic Games\EpicGamesLauncher"
+    ]
+    for path in possible_paths:
+        try:
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path)
+            data_path = winreg.QueryValueEx(key, "AppDataPath")[0]
+            winreg.CloseKey(key)
+            print(data_path)
+            
+        
+        except FileNotFoundError:
+            continue
+    if not data_path:
+        print("Epic Games Launcher not found in registry.")
+
+    manifest_path = os.path.join(data_path, "Manifests")
+    if os.path.exists(manifest_path):
+        for file in os.listdir(manifest_path):
+            if file.endswith(".item"):
+                with open(os.path.join(manifest_path, file), "r") as f:
+                    content = f.read()
+                    if "Rocket League" in content:
+                        print("Rocket League found in Epic Games Launcher.")
+                        
+                with open(os.path.join(manifest_path, file), "r") as f:
+                    daten = json.load(f)
+
+                    displayName = daten.get("InstallLocation","")
+                    if daten.get:
+                        print("Path found: " + displayName)
+                        break
+                                                 
+                
+def find_RL_steam():
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"SOFTWARE\Valve\Steam")
+        data_path = winreg.QueryValueEx(key, "SteamPath")[0]
+        winreg.CloseKey(key)
+        print(data_path)
+    
+    except FileNotFoundError:
+        return None
+    
+find_RL_epic()
 
 
 menuColour= "#131b28"
