@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import os
 from tkinter import messagebox
+import webbrowser
 
 main = ctk.CTk()
 main.geometry("600x400")
@@ -53,6 +54,7 @@ corner_radius=0,
 text="Home",
 font=("Arial", 20, "bold"),
 )
+
 homeButton.configure(cursor="hand2")
 homeButton.bind("<Button-1>", ) #missing command
 
@@ -106,7 +108,7 @@ font=("Arial", 20, "bold"),
 )
 
 creditsButton.configure(cursor="hand2")
-creditsButton.bind("<Button-1>", ) #missing command
+creditsButton.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/W1ntrexx/Rocket-League-MapMod"))
 
 statusColor = "#06090D"
 
