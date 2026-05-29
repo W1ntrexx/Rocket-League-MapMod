@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 from tkinter import messagebox
 import webbrowser
+import menus
 
 main = ctk.CTk()
 main.geometry("600x400")
@@ -95,7 +96,7 @@ font=("Arial", 20, "bold"),
 )
 
 tweaksButton.configure(cursor="hand2")
-tweaksButton.bind("<Button-1>", ) #missing command
+tweaksButton.bind("<Button-1>", lambda e: menus.showTweaks(main))
 
 creditsButton = ctk.CTkButton(
 main,
