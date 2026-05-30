@@ -11,7 +11,15 @@ def showTweaks(window):
         fg_color="#2b2b2b",
         corner_radius=0,
     )
+    
+    presetCombobox = ctk.CTkComboBox(
+        window,
+        width=10
+    )
+
+
     tweaksFrame.place(x=200, y=0)
+    presetCombobox.place(x = 250, y = 50)
 
     return tweaksFrame
 
