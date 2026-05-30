@@ -13,12 +13,12 @@ def showTweaks(window):
     )
     
     presetCombobox = ctk.CTkComboBox(
-        window,
+        tweaksFrame,
         width=10
     )
     
     tweaksFrame.place(x=200, y=0)
-    presetCombobox.place(x = 250, y = 50)
+    presetCombobox.place(x=220, y=50)
 
     return tweaksFrame
 
