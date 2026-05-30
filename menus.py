@@ -33,6 +33,26 @@ def showMapChanger(window):
     )
     mapChangerFrame.place(x=200, y=0)
 
+    mapScrollFrame = ctk.CTkScrollableFrame(
+        mapChangerFrame,
+        width=380, height=380,
+        fg_color="#2b2b2b",
+        corner_radius=0,
+    )
+    mapScrollFrame.place(x=0, y=0)
+
+    maps = ["Map A", "Map B", "Map C", "Map D", "Map E", "Map F", "Map G", "Map H", "Map I", "Map J"]
+
+    for i, map_name in enumerate(maps):
+        row = i //3
+        col = i % 3
+
+        mapButton = ctk.CTkButton(
+            mapScrollFrame,
+            width=100, height=80,
+        )
+        mapButton.grid(row=row, column=col, padx=5, pady=5)
+
     return mapChangerFrame
 
 def showSkinsChanger(window):
@@ -45,9 +65,6 @@ def showSkinsChanger(window):
     skinsChangerFrame.place(x=200, y=0)
 
     return skinsChangerFrame
-
-  
-    return tweaksFrame
 
 
 
