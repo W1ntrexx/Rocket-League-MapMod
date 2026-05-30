@@ -96,6 +96,14 @@ def infoBox():
 infoLabel.configure(cursor="hand2")
 infoLabel.bind("<Button-1>", lambda e: infoBox())
 
+current_menu_frame = None
+
+def clear_menu_frame():
+    global current_menu_frame
+    if current_menu_frame is not None:
+        current_menu_frame.destroy()
+        current_menu_frame = None
+
 homeButton = ctk.CTkButton(
 main,
 width=200,
@@ -106,8 +114,12 @@ text="Home",
 font=("Arial", 20, "bold"),
 )
 
+def openHome():
+    clear_menu_frame()
+    print("Going to Home")
+
 homeButton.configure(cursor="hand2")
-homeButton.bind("<Button-1>", ) #missing command
+homeButton.bind("<Button-1>", lambda e: openHome()) #missing command
 
 changerMapButton = ctk.CTkButton(
 main,
@@ -145,8 +157,15 @@ text="Tweaks",
 font=("Arial", 20, "bold"),
 )
 
+def openTweaks():
+    global current_menu_frame
+    clear_menu_frame()
+    current_menu_frame = menus.showTweaks(main)
+    print("Going to tweaks")
+
+
 tweaksButton.configure(cursor="hand2")
-tweaksButton.bind("<Button-1>", lambda e: menus.showTweaks(main))
+tweaksButton.bind("<Button-1>", lambda e: openTweaks())
 
 creditsButton = ctk.CTkButton(
 main,

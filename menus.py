@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 
 def showTweaks(window):
-    global tweaksFrame, mapChangerFrame, skinChangerFrame
     
     tweaksFrame = ctk.CTkFrame(
         window,
@@ -13,6 +12,8 @@ def showTweaks(window):
         corner_radius=0,
     )
     tweaksFrame.place(x=200, y=0)
+
+    return tweaksFrame
 
 
 
