@@ -119,8 +119,14 @@ text="Change Map",
 font=("Arial", 20, "bold"),
 )
 
+def openMapChanger():
+    global current_menu_frame
+    clearn_menu_frame()
+    current_menu_frame = menus.showMapChanger(main)
+    print("Going to map changer")
+
 changerMapButton.configure(cursor="hand2")
-changerMapButton.bind("<Button-1>", ) #missing command
+changerMapButton.bind("<Button-1>", lambda e: openMapChanger())
 
 changerSkinsButton = ctk.CTkButton(
 main,
@@ -132,8 +138,14 @@ text="Change Skins",
 font=("Arial", 20, "bold"),
 )
 
+def openSkinsChanger():
+    global current_menu_frame
+    clear_menu_frame()
+    current_menu_frame = menus.showSkinsChanger(main)
+    print("Going to skins changer")
+
 changerSkinsButton.configure(cursor="hand2")
-changerSkinsButton.bind("<Button-1>", ) #missing command
+changerSkinsButton.bind("<Button-1>", lambda e: openSkinsChanger())
 
 tweaksButton = ctk.CTkButton(
 main,
