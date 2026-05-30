@@ -63,7 +63,7 @@ def showMapChanger(window):
     mapChangerFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
-        fg_color="#2b2b2b",
+        fg_color="#0b0f22",
         corner_radius=0,
     )
     mapChangerFrame.place(x=200, y=0)
@@ -71,7 +71,7 @@ def showMapChanger(window):
     mapScrollFrame = ctk.CTkScrollableFrame(
         mapChangerFrame,
         width=380, height=380,
-        fg_color="#2b2b2b",
+        fg_color="#0b0f22",
         corner_radius=0,
     )
     mapScrollFrame.place(x=0, y=0)
