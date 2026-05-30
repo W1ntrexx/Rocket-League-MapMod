@@ -133,7 +133,7 @@ font=("Arial", 20, "bold"),
 
 def openMapChanger():
     global current_menu_frame
-    clearn_menu_frame()
+    clear_menu_frame()
     current_menu_frame = menus.showMapChanger(main)
     print("Going to map changer")
 
