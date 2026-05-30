@@ -8,18 +8,53 @@ def showTweaks(window):
     tweaksFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
-        fg_color="#2b2b2b",
+        fg_color="#0b0f22",
         corner_radius=0,
     )
-    
-    presetCombobox = ctk.CTkComboBox(
+
+    presetsFrame = ctk.CTkFrame(
         tweaksFrame,
-        width=10
+        width=400, height=30,
+        fg_color="#101531",
+        corner_radius=0
+    )
+
+    cameraLabel = ctk.CTkLabel(
+        tweaksFrame,
+        text="Camera Presets:",
+        bg_color="#101531",
+    )
+    
+    presetCamCombobox = ctk.CTkComboBox(
+        tweaksFrame,
+        width=120
+    )
+
+    controlsLabel = ctk.CTkLabel(
+        tweaksFrame,
+        text="Controller Presets:",
+        bg_color="#101531",
+    )
+
+    presetConCombox = ctk.CTkComboBox(
+        tweaksFrame,
+        width=120
+    )
+
+    IncludeBindsCheckbox = ctk.CTkCheckBox(
+        tweaksFrame,
+        text="Include binds"
     )
     
     tweaksFrame.place(x=200, y=0)
-    presetCombobox.place(x=220, y=50)
-
+    presetsFrame.place(relx=0.5, rely=0, x=0, y=0, anchor="n")
+    cameraLabel.place(relx=0.20, rely=0, x=0, y=0, anchor="n")
+    presetCamCombobox.place(relx=0.23, rely=0, x=0, y=35, anchor="n")
+    controlsLabel.place(relx=0.7, rely=0, x=0, y=0, anchor="n")
+    presetConCombox.place(relx=0.72, rely=0, x=0, y=35, anchor="n")
+    IncludeBindsCheckbox.place(relx=0.70, rely=0, x=0, y=70, anchor="n")
+    
+    
     return tweaksFrame
 
 
@@ -47,7 +82,7 @@ def showSkinsChanger(window):
     return skinsChangerFrame
 
   
-    return tweaksFrame
+   
 
 
 
