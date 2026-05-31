@@ -7,20 +7,31 @@ from tkinter import messagebox
 import webbrowser
 import menus
 import json
+from CTkMessagebox import CTkMessagebox
+
+build = "DEV"
 
 main = ctk.CTk()
 main.geometry("600x400")
 main.title("RocketLeague MapMod - RLMM")
 main.resizable(False, False)
 
-if not os.path.exists("settings.png") or not os.path.exists("RLmmBG.png"):
+if not os.path.exists("settings.png") or not os.path.exists("RLmmBG.png") or not os.path.exists("InfoIcon.png"):
     messagebox.showerror("Error", "Missing required image files.")
     main.destroy()
 
 if not os.path.exists("firstTimeRun.txt"):
-    messagebox.showinfo("Warning", "This program is in early development and may contain bugs. Please report any issues to the developer.\nFurthermore, hes not resposible for any damage")
-    with open("firstTimeRun.txt", "w") as f:
-        pass
+    msg = CTkMessagebox(
+        title="Warning",
+        message="This program is in early development and may contain bugs. Please report any issues to the developer.\nFurthermore, hes not resposible for any damage",
+        icon="warning",
+        option_1="I understand!",
+    )
+    if msg.get() == "I understand!":
+        with open("firstTimeRun.txt", "w") as f:
+            pass
+    else:
+        exit()    
 
 def find_RL_epic():
     possible_paths = [
@@ -240,10 +251,10 @@ if(curStatus == "idle"):
     textColor = "white"
     statText = "Idling"
 elif(curStatus == "online"):
-    textColor = "green"
+    textColor = "red"
     statText = "Running"
 else:
-    textColor = "red"
+    textColor = "green"
     statText = "Offline"
 
 curStatusLabel = ctk.CTkLabel(
@@ -253,6 +264,18 @@ curStatusLabel = ctk.CTkLabel(
     fg_color="transparent",  
     bg_color=statusColor,
     text_color=textColor
+)
+
+if curStatus == "online":
+    curStatusLabel.configure(cursor="hand2")
+    curStatusLabel.bind("<Button-1>", lambda e: messagebox.showwarning("Warning", "This Programm works by switching files. You must close the opened instance of RocketLeague to modify any files."))
+
+
+buildLabel = ctk.CTkLabel(
+    main,
+    text=f"Build: {build}",
+    fg_color="black",
+    text_color="white"
 )
 
 
@@ -277,5 +300,7 @@ settLabel.bind("<Button-1>", ) #missing command
 
 statusLabel.place(rely=1.0, x=10, y=-12, anchor="sw")
 curStatusLabel.place(rely=1.0, x=90, y=-12, anchor="sw")
+
+buildLabel.place(relx=0.94, rely=0.94, x=0, y=0, anchor="n")
 
 main.mainloop()

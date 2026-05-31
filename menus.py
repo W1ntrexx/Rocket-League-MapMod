@@ -45,15 +45,135 @@ def showTweaks(window):
         tweaksFrame,
         text="Include binds"
     )
+
+    confirmPresetsButton = ctk.CTkButton(
+        tweaksFrame,
+        text="Confirm choices",
+        width=120
+    )
+
+    backupFrame = ctk.CTkFrame(
+        tweaksFrame,
+        width=400, height=30,
+        fg_color="#101531",
+        corner_radius=0
+    )
+
+    backupLabel = ctk.CTkLabel(
+        tweaksFrame,
+        text="Backups:",
+        fg_color="#101531"
+    )
+
+    createBackupButton = ctk.CTkButton(
+        tweaksFrame,
+        text="Create Backup",
+        width=120
+    )
+
+    createBackupEntry = ctk.CTkEntry(
+        tweaksFrame,
+        placeholder_text="Backup Name",
+        width=200
+    )
+
+    applyBackupButton = ctk.CTkButton(
+        tweaksFrame,
+        text="Apply Backup",
+        width=120
+    )
+
+    applyBackupCombobox = ctk.CTkComboBox(
+        tweaksFrame,
+        width=200
+    )
+
+    miscFrame = ctk.CTkFrame(
+        tweaksFrame,
+        width=400, height=30,
+        fg_color="#101531",
+        corner_radius=0
+    )
+
+    miscLabel = ctk.CTkLabel(
+        tweaksFrame,
+        text="Misc:",
+        fg_color="#101531"
+    )
+
+    clearCacheButton = ctk.CTkButton(
+        tweaksFrame,
+        text="Clear Cache",
+        width=100
+    )
+
+    bakkesButton = ctk.CTkButton(
+        tweaksFrame,
+        text="BM Textures",
+        width=100
+    )
+
+    startupEntry = ctk.CTkEntry(
+        tweaksFrame,
+        placeholder_text="Startup Options",
+        width=245
+    )
+
+    launchButton = ctk.CTkButton(
+        tweaksFrame,
+        text="Launch",
+        width=100
+    )
+
+    buttonColor = "#131524"
+    dropDownColor = "#1B1B35"
+    borderColor= "#24242E"
     
     tweaksFrame.place(x=200, y=0)
+
     presetsFrame.place(relx=0.5, rely=0, x=0, y=0, anchor="n")
-    cameraLabel.place(relx=0.20, rely=0, x=0, y=0, anchor="n")
-    presetCamCombobox.place(relx=0.23, rely=0, x=0, y=35, anchor="n")
-    controlsLabel.place(relx=0.7, rely=0, x=0, y=0, anchor="n")
-    presetConCombox.place(relx=0.72, rely=0, x=0, y=35, anchor="n")
-    IncludeBindsCheckbox.place(relx=0.70, rely=0, x=0, y=70, anchor="n")
+
+    cameraLabel.place(relx=0.7, rely=0, x=0, y=0, anchor="n")
+
+    presetCamCombobox.place(relx=0.74, rely=0, x=0, y=35, anchor="n")
+    presetCamCombobox.configure(border_color=borderColor, fg_color=buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+
+    controlsLabel.place(relx=0.20, rely=0, x=0, y=0, anchor="n")
+
+    presetConCombox.place(relx=0.23, rely=0, x=0, y=35, anchor="n")
+    presetConCombox.configure(border_color=borderColor, fg_color= buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+
+    IncludeBindsCheckbox.place(relx=0.215, rely=0, x=0, y=70, anchor="n")
+    IncludeBindsCheckbox.configure(border_color = borderColor)
+
+    confirmPresetsButton.place(relx=1, rely=0.28, x=-140, y=0, anchor="w")
+
+    backupFrame.place(relx=0.5, rely=0.35, x=0, y=0, anchor="n")
     
+    backupLabel.place(relx=0.2, rely=0.35, x=0, y=0, anchor="n")
+
+    createBackupButton.place(relx=1, rely=0.49, x=-140, y=0, anchor="w")
+
+    createBackupEntry.place(relx=1, rely=0.49, x=-370, y=0, anchor="w")
+    createBackupEntry.configure(border_color=borderColor, fg_color= buttonColor)
+
+    applyBackupButton.place(relx=1, rely=0.60, x=-140, y=0, anchor="w")
+
+    applyBackupCombobox.place(relx=1, rely=0.60, x=-370, y=0, anchor="w")
+    applyBackupCombobox.configure(border_color=borderColor, fg_color= buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+
+    miscFrame.place(relx=0.5, rely=0.67, x=0, y=0, anchor="n")
+
+    miscLabel.place(relx=0.2, rely=0.67, x=0, y=0, anchor="n")
+
+    clearCacheButton.place(relx=0.2, rely= 0.78, x=0, y=0, anchor="n")
+
+    bakkesButton.place(relx=0.5, rely= 0.78, x=0, y=0, anchor="n")
+
+    startupEntry.place(relx=0.38, rely= 0.89, x=0, y=0, anchor="n")
+    startupEntry.configure(border_color=borderColor, fg_color= buttonColor)
+
+    launchButton.place(relx=0.8, rely=0.89, x=0, y=0, anchor="n")
     
     return tweaksFrame
 
@@ -94,7 +214,7 @@ def showSkinsChanger(window):
     skinsChangerFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
-        fg_color="#2b2b2b",
+        fg_color="#0b0f22", 
         corner_radius=0,
     )
     skinsChangerFrame.place(x=200, y=0)
