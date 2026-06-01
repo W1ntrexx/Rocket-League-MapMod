@@ -66,7 +66,7 @@ def find_RL_epic():
                     displayName = daten.get("InstallLocation","")
                     if daten.get:
                         print("Path found: " + displayName)
-                        break
+                        return displayName
                                                  
                 
 def find_RL_steam():
@@ -78,9 +78,6 @@ def find_RL_steam():
     
     except FileNotFoundError:
         return None
-    
-find_RL_epic()
-
 
 menuColour= "#131b28"
 
@@ -182,8 +179,9 @@ font=("Arial", 20, "bold"),
 
 def openTweaks():
     global current_menu_frame
+    
     clear_menu_frame()
-    current_menu_frame = menus.showTweaks(main)
+    current_menu_frame = menus.showTweaks(main, find_RL_epic())
     print("Going to tweaks")
 
 

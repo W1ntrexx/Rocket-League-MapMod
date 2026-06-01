@@ -2,8 +2,31 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import messagebox
+import os
+import shutil
 
-def showTweaks(window):
+def showTweaks(window, rl_path):
+
+    def clearCache():
+        cache_path = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\Cache")
+        if os.path.exists(cache_path):
+            shutil.rmtree(cache_path)
+            messagebox.showinfo("Success", "Cache has been deleted.")
+        else:
+            messagebox.showwarning("Warning", "Cache has not been found.")
+
+        answer = messagebox.askyesno("Delete Saved?", "Would you like to delete .\AppData\Local\EpicGamesLauncher\Saved? (only neccessary if youre having issues starting up RL)")
+        savedPath = os.path.expanduser(r"~\AppData\Local\EpicGamesLauncher\Saved")
+        if answer and os.path.exists(savedPath):
+            messagebox.showwarning("Warning", "Epic Games must be closed and stopped (even in tray)")
+            shutil.rmtree(savedPath)
+            messagebox.showinfo("Success", "Saved has been deleted.")
+        else:
+            messagebox.showerror("Error", "Unable to delete Saved.")
+
+
+        
+        
     
     tweaksFrame = ctk.CTkFrame(
         window,
@@ -104,7 +127,7 @@ def showTweaks(window):
     clearCacheButton = ctk.CTkButton(
         tweaksFrame,
         text="Clear Cache",
-        width=100
+        width=100,
     )
 
     bakkesButton = ctk.CTkButton(
@@ -167,6 +190,7 @@ def showTweaks(window):
     miscLabel.place(relx=0.2, rely=0.67, x=0, y=0, anchor="n")
 
     clearCacheButton.place(relx=0.2, rely= 0.78, x=0, y=0, anchor="n")
+    clearCacheButton.bind("<Button-1>", lambda e:clearCache())
 
     bakkesButton.place(relx=0.5, rely= 0.78, x=0, y=0, anchor="n")
 
