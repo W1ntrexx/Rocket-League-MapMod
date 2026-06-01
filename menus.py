@@ -19,14 +19,33 @@ def showTweaks(window, rl_path):
         savedPath = os.path.expanduser(r"~\AppData\Local\EpicGamesLauncher\Saved")
         if answer and os.path.exists(savedPath):
             messagebox.showwarning("Warning", "Epic Games must be closed and stopped (even in tray)")
-            shutil.rmtree(savedPath)
-            messagebox.showinfo("Success", "Saved has been deleted.")
-        else:
-            messagebox.showerror("Error", "Unable to delete Saved.")
-
-
+            try:
+                shutil.rmtree(savedPath)
+                messagebox.showinfo("Success", "Saved has been deleted.")
+            except:
+                messagebox.showerror("Error", "Unable to delete Saved.")
+                print("Permission error: Programm was denied access.")
         
         
+
+    def createBackup():
+        if not os.path.exists("backups"):
+            os.mkdir("backups")
+        if createBackupEntry.get().strip() == "":
+            messagebox.showwarning("Warning", "Cannot save with empty name.")
+            return
+        backupName = createBackupEntry.get().strip()
+        
+        saveDataPath = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\SaveDataEpic\DBE_Production")
+        
+        try:
+            shutil.copytree(saveDataPath, fr"backups\{backupName}")
+            messagebox.showinfo("Saved.", f"Successfully saved backup under {backupName}")
+        except:
+            messagebox.showerror("Error", "Unable to make backup file.")
+
+            
+    
     
     tweaksFrame = ctk.CTkFrame(
         window,
@@ -176,6 +195,7 @@ def showTweaks(window, rl_path):
     backupLabel.place(relx=0.2, rely=0.35, x=0, y=0, anchor="n")
 
     createBackupButton.place(relx=1, rely=0.49, x=-140, y=0, anchor="w")
+    createBackupButton.bind("<Button-1>", lambda e: createBackup())
 
     createBackupEntry.place(relx=1, rely=0.49, x=-370, y=0, anchor="w")
     createBackupEntry.configure(border_color=borderColor, fg_color= buttonColor)
