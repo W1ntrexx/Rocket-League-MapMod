@@ -5,7 +5,7 @@ from tkinter import messagebox
 import os
 import shutil
 
-def showTweaks(window, rl_path):
+def showTweaks(window, rl_path, curStatus):
 
     def clearCache():
         cache_path = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\Cache")
@@ -38,11 +38,60 @@ def showTweaks(window, rl_path):
         
         saveDataPath = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\SaveDataEpic\DBE_Production")
         
-        try:
+        try:  #versucht zu copy pasten, ansonsten Fehlerausgabe
             shutil.copytree(saveDataPath, fr"backups\{backupName}")
             messagebox.showinfo("Saved.", f"Successfully saved backup under {backupName}")
+            applyBackupCombobox.configure(values=readBackups()) #aktualisiert applyBackupCombobox
         except:
             messagebox.showerror("Error", "Unable to make backup file.")
+
+    def readBackups():
+        backupList = []
+
+        if os.path.exists("backups"):
+            for eintrag in os.listdir("backups"):
+                backupList.append(str(eintrag))
+
+        return backupList
+    
+    def applyBackup(chosenBackup):
+        if not os.path.exists("backups"):
+            messagebox.showwarning("Uh oh...", "No backup folder has been found.")
+            return
+        if chosenBackup == "Select backup...":
+            messagebox.showwarning("Uh oh...", "You have not selected a backup.")
+            return
+        sourcePath = os.path.join("backups/", chosenBackup)
+        saveDataPath = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\SaveDataEpic\DBE_Production")
+        print(sourcePath)
+        if curStatus == "online":
+            if messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
+                try:
+                    shutil.copytree(sourcePath, saveDataPath, dirs_exist_ok=True)
+                    messagebox.showinfo("Horray", "Successfully applied backup")
+                except:
+                    messagebox.showerror("Uh oh...", "Unable to apply backup.")
+        
+                
+    def installBakkesTextures():
+        texture_path = os.path.expanduser(r"~\AppData\Roaming\bakkesmod\bakkesmod\data\acplugin\Decals")
+        if not os.path.exists(texture_path):
+            messagebox.showerror("Uh oh...", "Please install BakkesMod and AlphaConsole first.")
+            return
+        if messagebox.askyesno("BakkesMod Textures", "Do you wish to install the V1.0 BakkesMod Textures?"):
+            if curStatus == "online":
+                if messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
+                    try:
+                        shutil.copytree("textures", texture_path, dirs_exist_ok=True)
+                        messagebox.showinfo("Horray", "Successfully applied textures")
+                    except:
+                        messagebox.showerror("Uh oh...", "Unable to apply textures.")
+        
+
+    
+
+
+
 
             
     
@@ -127,7 +176,8 @@ def showTweaks(window, rl_path):
 
     applyBackupCombobox = ctk.CTkComboBox(
         tweaksFrame,
-        width=200
+        width=200,
+        values=readBackups()
     )
 
     miscFrame = ctk.CTkFrame(
@@ -201,9 +251,11 @@ def showTweaks(window, rl_path):
     createBackupEntry.configure(border_color=borderColor, fg_color= buttonColor)
 
     applyBackupButton.place(relx=1, rely=0.60, x=-140, y=0, anchor="w")
+    applyBackupButton.bind("<Button-1>", lambda e:applyBackup(applyBackupCombobox.get().strip()))
 
     applyBackupCombobox.place(relx=1, rely=0.60, x=-370, y=0, anchor="w")
     applyBackupCombobox.configure(border_color=borderColor, fg_color= buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+    applyBackupCombobox.set("Select backup...")
 
     miscFrame.place(relx=0.5, rely=0.67, x=0, y=0, anchor="n")
 
@@ -213,6 +265,7 @@ def showTweaks(window, rl_path):
     clearCacheButton.bind("<Button-1>", lambda e:clearCache())
 
     bakkesButton.place(relx=0.5, rely= 0.78, x=0, y=0, anchor="n")
+    bakkesButton.bind("<Button-1>", lambda e:installBakkesTextures())
 
     startupEntry.place(relx=0.38, rely= 0.89, x=0, y=0, anchor="n")
     startupEntry.configure(border_color=borderColor, fg_color= buttonColor)

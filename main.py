@@ -181,7 +181,7 @@ def openTweaks():
     global current_menu_frame
     
     clear_menu_frame()
-    current_menu_frame = menus.showTweaks(main, find_RL_epic())
+    current_menu_frame = menus.showTweaks(main, find_RL_epic(), curStatus)
     print("Going to tweaks")
 
 
