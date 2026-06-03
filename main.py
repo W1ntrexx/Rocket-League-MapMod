@@ -220,6 +220,13 @@ image=sett_image,
 bg="#030409",
 )
 
+def openSettings():
+    global current_menu_frame
+    
+    clear_menu_frame()
+    current_menu_frame = menus.showSettings(main, find_RL_epic())
+    print("Going to settings")
+
 bg_Image = ctk.CTkImage(
     light_image=Image.open("RLmmBG.png"),
     dark_image=Image.open("RLmmBG.png"),
@@ -294,7 +301,7 @@ infoLabel.place(relx=1.0, y=10, x=-50, anchor="ne")
 
 settLabel.place(relx=1.0, y=10, x=-10, anchor="ne")
 settLabel.configure(cursor="hand2")
-settLabel.bind("<Button-1>", ) #missing command
+settLabel.bind("<Button-1>", lambda e: openSettings()) #missing command
 
 statusLabel.place(rely=1.0, x=10, y=-12, anchor="sw")
 curStatusLabel.place(rely=1.0, x=90, y=-12, anchor="sw")
