@@ -25,7 +25,8 @@ def editSettings(line, content=None):
     if content is not None:
         while len(lines) <= index:
             lines.append("\n")
-        lines[index] = str(content)
+        # Ensure each written setting ends with a newline to avoid concatenation
+        lines[index] = str(content) + "\n"
         with open("settings.txt", "w") as settings:
             settings.writelines(lines)
             print("successfully written")
