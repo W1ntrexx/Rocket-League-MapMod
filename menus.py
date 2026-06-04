@@ -6,14 +6,26 @@ import os
 import shutil
 from tkinter import filedialog
 
+import psutil
+
 SETTINGS_LINE_AUTOMATIC_SEARCH = 5
 SETTINGS_LINE_PATH = 6
+SETTINGS_LINE_INTERVAL = 7
 
 buttonColor = "#131524"
 dropDownColor = "#1B1B35"
 borderColor= "#24242E"
 bgColor = "#0b0f22"
 columnColor = "#101531"
+
+COMBOBOX_SETTINGS = {       #verwende mit .configure(**COMBOBOX_SETTINGS) / wichtig sind die Sterne!
+    "border_color": borderColor,
+    "fg_color": buttonColor,
+    "dropdown_fg_color": dropDownColor,
+    "button_color": borderColor
+}
+
+
 
 def editSettings(line, content=None):
     if not os.path.exists("settings.txt"):
@@ -48,15 +60,16 @@ def determinePath(rl_path, automaticSearch):
         return rl_path
     return str(saved_path)
 
-
-
 def showTweaks(window, rl_path, curStatus):
 
     def clearCache():
         cache_path = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\Cache")
-        if os.path.exists(cache_path):
+        if os.path.exists(cache_path) and curStatus == "offline":
             shutil.rmtree(cache_path)
             messagebox.showinfo("Success", "Cache has been deleted.")
+        elif curStatus() == "online":
+            messagebox.showwarning("Warning", "Please close Rocket League before clearing the cache.")
+            pass
         else:
             messagebox.showwarning("Warning", "Cache has not been found.")
 
@@ -109,7 +122,7 @@ def showTweaks(window, rl_path, curStatus):
         sourcePath = os.path.join("backups/", chosenBackup)
         saveDataPath = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\SaveDataEpic\DBE_Production")
         print(sourcePath)
-        if curStatus == "online":
+        if curStatus() == "online":
             if messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
                 try:
                     shutil.copytree(sourcePath, saveDataPath, dirs_exist_ok=True)
@@ -131,14 +144,6 @@ def showTweaks(window, rl_path, curStatus):
                         messagebox.showinfo("Horray", "Successfully applied textures")
                     except:
                         messagebox.showerror("Uh oh...", "Unable to apply textures.")
-        
-
-    
-    buttonColor = "#131524"
-    dropDownColor = "#1B1B35"
-    borderColor= "#24242E"
-    bgColor = "#0b0f22"
-    columnColor = "#101531"
 
     
     tweaksFrame = ctk.CTkFrame(
@@ -159,33 +164,39 @@ def showTweaks(window, rl_path, curStatus):
         tweaksFrame,
         text="Camera Presets:",
         bg_color=columnColor,
+        text_color="white"
     )
     
     presetCamCombobox = ctk.CTkComboBox(
         tweaksFrame,
-        width=120
+        width=120,
+        text_color="white"
     )
 
     controlsLabel = ctk.CTkLabel(
         tweaksFrame,
         text="Controller Presets:",
         bg_color=columnColor,
+        text_color="white"
     )
 
     presetConCombox = ctk.CTkComboBox(
         tweaksFrame,
-        width=120
+        width=120,
+        text_color="white"
     )
 
     IncludeBindsCheckbox = ctk.CTkCheckBox(
         tweaksFrame,
-        text="Include binds"
+        text="Include binds",
+        text_color="white"
     )
 
     confirmPresetsButton = ctk.CTkButton(
         tweaksFrame,
         text="Confirm choices",
-        width=120
+        width=120,
+        text_color="white"
     )
 
     backupFrame = ctk.CTkFrame(
@@ -198,31 +209,36 @@ def showTweaks(window, rl_path, curStatus):
     backupLabel = ctk.CTkLabel(
         tweaksFrame,
         text="Backups:",
-        fg_color=columnColor
+        fg_color=columnColor,
+        text_color="white"
     )
 
     createBackupButton = ctk.CTkButton(
         tweaksFrame,
         text="Create Backup",
-        width=120
+        width=120,
+        text_color="white"
     )
 
     createBackupEntry = ctk.CTkEntry(
         tweaksFrame,
         placeholder_text="Backup Name",
-        width=200
+        width=200,
+        text_color="white"
     )
 
     applyBackupButton = ctk.CTkButton(
         tweaksFrame,
         text="Apply Backup",
-        width=120
+        width=120,
+        text_color="white"
     )
 
     applyBackupCombobox = ctk.CTkComboBox(
         tweaksFrame,
         width=200,
-        values=readBackups()
+        values=readBackups(),
+        text_color="white"
     )
 
     miscFrame = ctk.CTkFrame(
@@ -235,31 +251,36 @@ def showTweaks(window, rl_path, curStatus):
     miscLabel = ctk.CTkLabel(
         tweaksFrame,
         text="Misc:",
-        fg_color=columnColor
+        fg_color=columnColor,
+        text_color="white"
     )
 
     clearCacheButton = ctk.CTkButton(
         tweaksFrame,
         text="Clear Cache",
         width=100,
+        text_color="white"
     )
 
     bakkesButton = ctk.CTkButton(
         tweaksFrame,
         text="BM Textures",
-        width=100
+        width=100,
+        text_color="white"
     )
 
     startupEntry = ctk.CTkEntry(
         tweaksFrame,
         placeholder_text="Startup Options",
-        width=245
+        width=245,
+        text_color="white"
     )
 
     launchButton = ctk.CTkButton(
         tweaksFrame,
         text="Launch",
-        width=100
+        width=100,
+        text_color="white"
     )
     
     tweaksFrame.place(x=200, y=0)
@@ -269,12 +290,12 @@ def showTweaks(window, rl_path, curStatus):
     cameraLabel.place(relx=0.7, rely=0, x=0, y=0, anchor="n")
 
     presetCamCombobox.place(relx=0.74, rely=0, x=0, y=35, anchor="n")
-    presetCamCombobox.configure(border_color=borderColor, fg_color=buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+    presetCamCombobox.configure(**COMBOBOX_SETTINGS)
 
     controlsLabel.place(relx=0.20, rely=0, x=0, y=0, anchor="n")
 
     presetConCombox.place(relx=0.23, rely=0, x=0, y=35, anchor="n")
-    presetConCombox.configure(border_color=borderColor, fg_color= buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+    presetConCombox.configure(**COMBOBOX_SETTINGS)
 
     IncludeBindsCheckbox.place(relx=0.215, rely=0, x=0, y=70, anchor="n")
     IncludeBindsCheckbox.configure(border_color = borderColor)
@@ -295,7 +316,7 @@ def showTweaks(window, rl_path, curStatus):
     applyBackupButton.bind("<Button-1>", lambda e:applyBackup(applyBackupCombobox.get().strip()))
 
     applyBackupCombobox.place(relx=1, rely=0.60, x=-370, y=0, anchor="w")
-    applyBackupCombobox.configure(border_color=borderColor, fg_color= buttonColor, dropdown_fg_color=dropDownColor, button_color=borderColor)
+    applyBackupCombobox.configure(**COMBOBOX_SETTINGS)
     applyBackupCombobox.set("Select backup...")
 
     miscFrame.place(relx=0.5, rely=0.67, x=0, y=0, anchor="n")
@@ -323,9 +344,7 @@ def showSettings(window, rl_path):
         
         # Angenommen, das Checkbox-Setting soll in Zeile 7 eurer settings.txt stehen:
         editSettings(SETTINGS_LINE_AUTOMATIC_SEARCH, current_state)
-        print(f"Checkbox-Zustand {current_state} wurde gespeichert.")
-
-    # Note: saved state will be applied after the checkbox widget is created below.
+        print(f"Checkbox-state {current_state} has been saved.")
     
 
     def choosePath():
@@ -346,6 +365,7 @@ def showSettings(window, rl_path):
         window,
         width = 400, height = 400,
         fg_color=bgColor,
+        
         corner_radius=0
     )
 
@@ -353,30 +373,78 @@ def showSettings(window, rl_path):
         settingsFrame,
         width = 400, height = 30,
         fg_color=columnColor,
+        
         corner_radius=0
     )
 
     pathLabel = ctk.CTkLabel(
         settingsFrame,
         text="Path settings:",
-        fg_color=columnColor
+        fg_color=columnColor,
+        text_color="white"
     )
 
     pathEntry = ctk.CTkEntry(
         settingsFrame,
         width=270,
+        text_color="white"
     )
 
     pathSearchButton = ctk.CTkButton(
         settingsFrame,
         width=100,
-        text="Path"
+        text="Path",
+        text_color="white"
     )
 
     automaticSearchCheckbox = ctk.CTkCheckBox(
         settingsFrame,
         text="Automatic search",
-        command=on_checkbox_toggle
+        command=on_checkbox_toggle,
+        text_color="white"
+    )
+
+    QoLFrame = ctk.CTkFrame(
+        settingsFrame,
+        width = 400, height = 30,
+        fg_color=columnColor,
+        corner_radius=0
+    )
+
+    QoLLabel = ctk.CTkLabel(
+        settingsFrame,
+        text="Quality of Life settings:",
+        fg_color=columnColor,
+        text_color="white"
+    )
+
+    intervalSlider = ctk.CTkSlider(
+        settingsFrame,
+        width=200,
+        from_=1, to=10,
+        number_of_steps=9,
+        command=lambda value: editSettings(SETTINGS_LINE_INTERVAL, str(value)) #speichert den Wert des Sliders in Zeile 8 der settings.txt
+    )
+
+    intervalLabel = ctk.CTkLabel(
+        settingsFrame,
+        text="Refreshing Interval: ",
+        fg_color=bgColor,
+        text_color="white"
+    )
+
+    aSecondLabel = ctk.CTkLabel(
+        settingsFrame,
+        text="1",
+        fg_color=bgColor,
+        text_color="white"
+    )
+
+    tenSecondLabel = ctk.CTkLabel(
+        settingsFrame,
+        text="10 Seconds",
+        fg_color=bgColor,
+        text_color="white"
     )
 
     # Wir lesen Zeile 5 aus. Wenn dort "1" steht, setzen wir das Häkchen.
@@ -401,6 +469,19 @@ def showSettings(window, rl_path):
     pathSearchButton.bind("<Button-1>", lambda e: updatePath())
 
     automaticSearchCheckbox.place(relx=0.225, rely=0.2, x=0, y=0, anchor="n")
+
+    QoLFrame.place(relx=0.5, rely=0.32, x=0, y=0, anchor="n")
+
+    QoLLabel.place(relx=0.23, rely=0.32, x=0, y=0, anchor="n")
+
+    intervalSlider.place(relx=0.5, rely=0.48, x=0, y=0, anchor="n")
+    intervalSlider.set(5)
+
+    intervalLabel.place(relx=0.5, rely=0.41, x=0, y=0, anchor="n")
+
+    aSecondLabel.place(relx=0.24, rely=0.468, x=0, y=0, anchor="n")
+
+    tenSecondLabel.place(relx=0.83, rely=0.466, x=0, y=0, anchor="n")
 
     return settingsFrame
 
@@ -461,7 +542,7 @@ def showMapChanger(window, rl_path):
         popup.title("Swap Map")
         popup.geometry("300x150")
         popup.configure(bg="#0b0f22")
-        label = tk.Label(popup, text=f"swapping in {custom_map_name}?", bg="#0b0f22", fg="white")
+        label = tk.Label(popup, text=f"swapping in {custom_map_name}?", bg="#0b0f22", fg="white", font=("Arial", 10))
         label.pack(pady=20)
 
         freeplayMaps = get_freeplay_maps(rl_path)
@@ -469,14 +550,17 @@ def showMapChanger(window, rl_path):
             popup,
             values=freeplayMaps,
             width=200,
+            text_color="white"
         )
+        mapDropdown.configure(**COMBOBOX_SETTINGS)
         mapDropdown.set("Select Freeplay Map...")
         mapDropdown.pack(pady=10)
 
         confirmButton = ctk.CTkButton(
             popup,
             text = "Confirm Swap",
-            command = lambda: swap_maps(custom_map_name, mapDropdown.get(), popup),   #swap_maps muss noch definiert werden um die actual files zu swappen, mach ich demnächst
+            command = lambda: swap_maps(custom_map_name, mapDropdown.get(), popup),
+            text_color="white"
         )
         confirmButton.pack(pady=10)
 
@@ -489,7 +573,8 @@ def showMapChanger(window, rl_path):
             mapScrollFrame,
             text=map_name,
             width=110, height=150,
-            command = lambda m=map_name: open_swap_popup(m)
+            command = lambda m=map_name: open_swap_popup(m),
+            text_color="white"
         )
         mapButton.grid(row=row, column=col, padx=5, pady=5)
 

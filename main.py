@@ -8,8 +8,13 @@ import webbrowser
 import menus
 import json
 from CTkMessagebox import CTkMessagebox
+import psutil
 
 build = "DEV"
+
+SETTINGS_LINE_AUTOMATIC_SEARCH = 5
+SETTINGS_LINE_PATH = 6
+SETTINGS_LINE_INTERVAL = 7
 
 main = ctk.CTk()
 main.geometry("600x400")
@@ -67,17 +72,48 @@ def find_RL_epic():
                     if daten.get:
                         print("Path found: " + displayName)
                         return displayName
-                                                 
-                
-def find_RL_steam():
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"SOFTWARE\Valve\Steam")
-        data_path = winreg.QueryValueEx(key, "SteamPath")[0]
-        winreg.CloseKey(key)
-        print(data_path)
-    
-    except FileNotFoundError:
-        return None
+                    
+def checkProcesses(process):
+    for proc in psutil.process_iter(['name']):
+        if proc.info['name'] == process:
+            return True
+    return False
+
+bound = False
+
+def updateStatus():
+    global curStatus
+    global curStatusLabel
+    global bound
+    if checkProcesses("RocketLeague.exe"):
+        curStatus = "online"
+    else:
+        curStatus = "offline"
+        
+        
+    if(curStatus == "online"):
+        textColor = "red"
+        statText = "Running"
+    else:
+        textColor = "green"
+        statText = "Offline"
+
+    if curStatus == "online" and not bound:
+        curStatusLabel.configure(cursor="hand2")
+        curStatusLabel.bind("<Button-1>", lambda e: messagebox.showwarning("Warning", "This Programm works by switching files. You must close the opened instance of RocketLeague to modify any files."))
+        bound = True
+    elif curStatus == "offline" and bound:
+        curStatusLabel.configure(cursor="")
+        curStatusLabel.unbind("<Button-1>")
+        bound = False
+        
+
+    curStatusLabel.configure(text=statText, text_color=textColor)
+    main.after(5000, updateStatus)
+
+def getLiveStatus():
+    global curStatus
+    return curStatus 
 
 menuColour= "#131b28"
 
@@ -120,6 +156,7 @@ fg_color=menuColour,
 corner_radius=0,
 text="Home",
 font=("Arial", 20, "bold"),
+text_color="white"
 )
 
 def openHome():
@@ -137,6 +174,7 @@ fg_color=menuColour,
 corner_radius=0,
 text="Change Map",
 font=("Arial", 20, "bold"),
+text_color="white"
 )
 
 def openMapChanger():
@@ -156,6 +194,7 @@ fg_color=menuColour,
 corner_radius=0,
 text="Change Skins",
 font=("Arial", 20, "bold"),
+text_color="white"
 )
 
 def openSkinsChanger():
@@ -175,13 +214,14 @@ fg_color=menuColour,
 corner_radius=0,
 text="Tweaks",
 font=("Arial", 20, "bold"),
+text_color="white"
 )
 
 def openTweaks():
     global current_menu_frame
     
     clear_menu_frame()
-    current_menu_frame = menus.showTweaks(main, find_RL_epic(), curStatus)
+    current_menu_frame = menus.showTweaks(main, find_RL_epic(), getLiveStatus)
     print("Going to tweaks")
 
 
@@ -196,6 +236,7 @@ fg_color=menuColour,
 corner_radius=0,
 text="Credits",
 font=("Arial", 20, "bold"),
+text_color="white"
 )
 
 creditsButton.configure(cursor="hand2")
@@ -250,17 +291,11 @@ statusLabel = ctk.CTkLabel(
     text_color="white"
 )
 
-curStatus = "online" # idle, online, offline
+curStatus = "" # idle, online, offline
 
-if(curStatus == "idle"):
-    textColor = "white"
-    statText = "Idling"
-elif(curStatus == "online"):
-    textColor = "red"
-    statText = "Running"
-else:
-    textColor = "green"
-    statText = "Offline"
+statText = "?"
+
+textColor="white"
 
 curStatusLabel = ctk.CTkLabel(
     main,
@@ -270,11 +305,6 @@ curStatusLabel = ctk.CTkLabel(
     bg_color=statusColor,
     text_color=textColor
 )
-
-if curStatus == "online":
-    curStatusLabel.configure(cursor="hand2")
-    curStatusLabel.bind("<Button-1>", lambda e: messagebox.showwarning("Warning", "This Programm works by switching files. You must close the opened instance of RocketLeague to modify any files."))
-
 
 buildLabel = ctk.CTkLabel(
     main,
@@ -307,5 +337,7 @@ statusLabel.place(rely=1.0, x=10, y=-12, anchor="sw")
 curStatusLabel.place(rely=1.0, x=90, y=-12, anchor="sw")
 
 buildLabel.place(relx=0.94, rely=0.94, x=0, y=0, anchor="n")
+
+updateStatus()
 
 main.mainloop()
