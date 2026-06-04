@@ -23,7 +23,7 @@ if not os.path.exists("settings.png") or not os.path.exists("RLmmBG.png") or not
 if not os.path.exists("firstTimeRun.txt"):
     msg = CTkMessagebox(
         title="Warning",
-        message="This program is in early development and may contain bugs. Please report any issues to the developer.\nFurthermore, hes not resposible for any damage",
+        message="This program is in early development and may contain bugs. Please report any issues to the developers.\nFurthermore, they're not resposible for any damage",
         icon="warning",
         option_1="I understand!",
     )
@@ -142,7 +142,7 @@ font=("Arial", 20, "bold"),
 def openMapChanger():
     global current_menu_frame
     clear_menu_frame()
-    current_menu_frame = menus.showMapChanger(main)
+    current_menu_frame = menus.showMapChanger(main, find_RL_epic())
     print("Going to map changer")
 
 changerMapButton.configure(cursor="hand2")
