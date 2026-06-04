@@ -275,8 +275,38 @@ def showTweaks(window, rl_path, curStatus):
     return tweaksFrame
 
 
+def get_custom_maps():  
+    folder = "custom_maps"
+    maps = []
 
-def showMapChanger(window):
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+        return maps
+    
+    for file in os.listdir(folder):
+        if file.endswith(".upk"):
+            name=file.replace(".upk", "")
+            maps.append(name)
+
+    return maps
+
+def get_freeplay_maps(rl_path):
+    folder = os.path.join(rl_path, "TAGame", "CookedPCConsole")
+    maps = []
+
+    if not os.path.exists(folder):
+        return maps
+
+    for file in os.listdir(folder):
+        if file.lower().endswith("_p.upk"):
+            name=file.replace("_p.upk", "")
+            maps.append(name)
+
+    return maps
+
+
+
+def showMapChanger(window, rl_path):
     mapChangerFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
@@ -293,7 +323,33 @@ def showMapChanger(window):
     )
     mapScrollFrame.place(x=0, y=0)
 
-    maps = ["Map A", "Map B", "Map C", "Map D", "Map E", "Map F", "Map G", "Map H", "Map I", "Map J"]
+    maps = get_custom_maps()
+    print("Maps found:", maps)
+
+    def open_swap_popup(custom_map_name):
+        popup = tk.Toplevel(window)
+        popup.title("Swap Map")
+        popup.geometry("300x150")
+        popup.configure(bg="#0b0f22")
+        label = tk.Label(popup, text=f"swapping in {custom_map_name}?", bg="#0b0f22", fg="white")
+        label.pack(pady=20)
+
+        freeplayMaps = get_freeplay_maps(rl_path)
+        mapDropdown = ctk.CTkComboBox(
+            popup,
+            values=freeplayMaps,
+            width=200,
+        )
+        mapDropdown.set("Select Freeplay Map...")
+        mapDropdown.pack(pady=10)
+
+        confirmButton = ctk.CTkButton(
+            popup,
+            text = "Confirm Swap",
+            command = lambda: swap_maps(custom_map_name, mapDropdown.get(), popup),   #swap_maps muss noch definiert werden um die actual files zu swappen, mach ich demnächst
+        )
+        confirmButton.pack(pady=10)
+
 
     for i, map_name in enumerate(maps):
         row = i //3
@@ -301,9 +357,12 @@ def showMapChanger(window):
 
         mapButton = ctk.CTkButton(
             mapScrollFrame,
-            width=100, height=80,
+            text=map_name,
+            width=110, height=150,
+            command = lambda m=map_name: open_swap_popup(m)
         )
         mapButton.grid(row=row, column=col, padx=5, pady=5)
+
 
     return mapChangerFrame
 
