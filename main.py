@@ -36,7 +36,10 @@ if not os.path.exists("firstTimeRun.txt"):
         with open("firstTimeRun.txt", "w") as f:
             pass
     else:
-        exit()    
+        exit() 
+    with open("settings.txt", "w") as f:
+        pass   
+    menus.editSettings(SETTINGS_LINE_AUTOMATIC_SEARCH, "1")
 
 def find_RL_epic():
     possible_paths = [
@@ -72,6 +75,8 @@ def find_RL_epic():
                     if daten.get:
                         print("Path found: " + displayName)
                         return displayName
+                    else: 
+                        return 1
                     
 def checkProcesses(process):
     for proc in psutil.process_iter(['name']):
@@ -80,6 +85,15 @@ def checkProcesses(process):
     return False
 
 bound = False
+
+def checkPath():
+    if menus.editSettings(SETTINGS_LINE_PATH) == "":
+        return find_RL_epic()
+    elif find_RL_epic == 1:
+        messagebox.showerror("Uh oh...", "RocketLeague has not been detected. Please select the Path in the settings or install RocketLeague.")
+        pass
+    else:
+        return menus.editSettings(SETTINGS_LINE_PATH)
 
 def updateStatus():
     global curStatus
@@ -109,7 +123,15 @@ def updateStatus():
         
 
     curStatusLabel.configure(text=statText, text_color=textColor)
-    main.after(5000, updateStatus)
+    try:
+        interval_value = menus.editSettings(SETTINGS_LINE_INTERVAL)
+        if interval_value == "":
+            interval = 5.0
+        else:
+            interval = float(interval_value)
+    except ValueError:
+        interval = 5.0
+    main.after(int(100 * interval), updateStatus)
 
 def getLiveStatus():
     global curStatus
@@ -180,7 +202,7 @@ text_color="white"
 def openMapChanger():
     global current_menu_frame
     clear_menu_frame()
-    current_menu_frame = menus.showMapChanger(main, find_RL_epic())
+    current_menu_frame = menus.showMapChanger(main, checkPath())
     print("Going to map changer")
 
 changerMapButton.configure(cursor="hand2")
@@ -265,7 +287,7 @@ def openSettings():
     global current_menu_frame
     
     clear_menu_frame()
-    current_menu_frame = menus.showSettings(main, find_RL_epic())
+    current_menu_frame = menus.showSettings(main, checkPath())
     print("Going to settings")
 
 bg_Image = ctk.CTkImage(

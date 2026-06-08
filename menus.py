@@ -5,7 +5,7 @@ from tkinter import messagebox
 import os
 import shutil
 from tkinter import filedialog
-
+import sys
 import psutil
 
 SETTINGS_LINE_AUTOMATIC_SEARCH = 5
@@ -41,7 +41,6 @@ def editSettings(line, content=None):
         lines[index] = str(content) + "\n"
         with open("settings.txt", "w") as settings:
             settings.writelines(lines)
-            print("successfully written")
 
         return True
     else:
@@ -123,12 +122,14 @@ def showTweaks(window, rl_path, curStatus):
         saveDataPath = os.path.expanduser(r"~\Documents\My Games\Rocket League\TAGame\SaveDataEpic\DBE_Production")
         print(sourcePath)
         if curStatus() == "online":
-            if messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
-                try:
-                    shutil.copytree(sourcePath, saveDataPath, dirs_exist_ok=True)
-                    messagebox.showinfo("Horray", "Successfully applied backup.")
-                except:
-                    messagebox.showerror("Uh oh...", "Unable to apply backup.")
+            if not messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
+                return 
+        else:
+            try:
+                shutil.copytree(sourcePath, saveDataPath, dirs_exist_ok=True)
+                messagebox.showinfo("Horray", "Successfully applied backup.")
+            except:
+                messagebox.showerror("Uh oh...", "Unable to apply backup.")
         
                 
     def installBakkesTextures():
@@ -355,10 +356,47 @@ def showSettings(window, rl_path):
             pathEntry.insert(0, chosenPath)
             pathEntry.configure(state="readonly")
             return chosenPath
+
     
     def updatePath():
         newPath = choosePath()
-        editSettings(SETTINGS_LINE_PATH, newPath)
+        if os.path.exists(os.path.join(newPath, "TAGame", "CookedPCConsole")):
+            editSettings(SETTINGS_LINE_PATH, newPath)
+            pass
+        else:  
+            pathEntry.configure(state="normal")
+            pathEntry.delete(0, "end")      
+            pathEntry.configure(state="readonly")    
+            messagebox.showerror("Uh oh...", "The chosen path does not seem to be correct. Please choose the folder that contains the TAGame folder.")
+    
+    def resetApp():
+        if messagebox.askyesno("You fr?", "Are you sure you want to reset the app?"):
+            if os.path.exists("settings.txt"):
+                os.remove("settings.txt")
+            if os.path.exists("firstTimeRun.txt"):
+                os.remove("firstTimeRun.txt")
+            if os.path.exists("backups"):
+                shutil.rmtree("backups")
+            os.execl(sys.executable, sys.executable, *sys.argv)
+        
+    def programmPath():
+        
+        if getattr(sys, 'frozen', False):
+            app_path = os.path.dirname(sys.executable)
+        else:
+            app_path = os.path.dirname(os.path.abspath(__file__))
+        
+        try:
+            os.startfile(app_path)
+        except Exception as e:
+            print(f"Konnte den Ordner nicht öffnen: {e}")
+
+    def RLPath():
+        if determinePath(rl_path, editSettings(SETTINGS_LINE_AUTOMATIC_SEARCH)) == "":
+            messagebox.showwarning("Uh oh...", "There is no path...")
+            pass
+        else:
+            os.startfile(determinePath(rl_path, editSettings(SETTINGS_LINE_AUTOMATIC_SEARCH)))
 
 
     settingsFrame = ctk.CTkFrame(
@@ -428,7 +466,7 @@ def showSettings(window, rl_path):
 
     intervalLabel = ctk.CTkLabel(
         settingsFrame,
-        text="Refreshing Interval: ",
+        text="Status refreshing Interval: ",
         fg_color=bgColor,
         text_color="white"
     )
@@ -445,6 +483,30 @@ def showSettings(window, rl_path):
         text="10 Seconds",
         fg_color=bgColor,
         text_color="white"
+    )
+
+    resetButton = ctk.CTkButton(
+        settingsFrame,
+        text="Reset App",  
+        text_color="White",
+        fg_color="#991414",
+        hover_color="#630C0C",
+        width=100,
+        command=resetApp
+    )
+
+    goPathButton = ctk.CTkButton(
+        settingsFrame,
+        text="App Path",
+        width = 100,
+        command=programmPath
+    )
+
+    goRLButton = ctk.CTkButton(
+        settingsFrame,
+        text="RL Path",
+        width=100,
+        command=RLPath
     )
 
     # Wir lesen Zeile 5 aus. Wenn dort "1" steht, setzen wir das Häkchen.
@@ -482,6 +544,12 @@ def showSettings(window, rl_path):
     aSecondLabel.place(relx=0.24, rely=0.468, x=0, y=0, anchor="n")
 
     tenSecondLabel.place(relx=0.83, rely=0.466, x=0, y=0, anchor="n")
+
+    resetButton.place(relx=0.2, rely=0.87, x=0, y=0, anchor="n")
+
+    goPathButton.place(relx=0.5, rely=0.87, x=0, y=0, anchor="n")
+
+    goRLButton.place(relx=0.8, rely=0.87, x=0, y=0, anchor="n")
 
     return settingsFrame
 
