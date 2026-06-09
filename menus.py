@@ -649,7 +649,23 @@ def showMapChanger(window, rl_path):
 
     return mapChangerFrame
 
-def showSkinsChanger(window):
+def get_boosts(rl_path):
+    folder = os.path.join(rl_path, "TAGame", "CookedPCConsole")
+    boosts = []
+    
+    if not os.path.exists(folder):
+        return boosts
+    
+    for file in os.listdir(folder):
+        lower = file.lower()
+        if lower.startswith("boost_") and lower.endswith("_sf.upk") and not lower.endswith("_t_sf.upk"):
+            name = file[len("boost_"):-len("_SF.upk")]
+            if name not in boosts:
+                boosts.append(name)
+    
+    return boosts
+
+def showSkinsChanger(window, rl_path):
     skinsChangerFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
@@ -657,6 +673,37 @@ def showSkinsChanger(window):
         corner_radius=0,
     )
     skinsChangerFrame.place(x=200, y=0)
+
+    boosts = get_boosts(rl_path)
+
+    boostLabel = ctk.CTkLabel(
+        skinsChangerFrame,
+        text="Boosts:",
+    )
+    boostLabel.place(relx=0.5, rely=0.02, anchor="n")
+
+    swapToBoost = ctk.CTkComboBox(
+        skinsChangerFrame,
+        values=boosts,
+        width=150,
+    )
+    swapToBoost.set("Swap to...")
+    swapToBoost.place(relx=0.05, rely=0.08, anchor="nw")
+
+    swapFromBoost = ctk.CTkComboBox(
+        skinsChangerFrame,
+        values=boosts,
+        width=150,
+    )
+    swapFromBoost.set("Swap from...")
+    swapFromBoost.place(relx=0.95, rely=0.08, anchor="ne")
+
+    confirmBoostButton = ctk.CTkButton(
+        skinsChangerFrame,
+        text="Confirm",
+        width=120,
+    )
+    confirmBoostButton.place(relx=0.5, rely=0.16, anchor="n")
 
     return skinsChangerFrame
 

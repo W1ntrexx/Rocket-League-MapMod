@@ -222,7 +222,7 @@ text_color="white"
 def openSkinsChanger():
     global current_menu_frame
     clear_menu_frame()
-    current_menu_frame = menus.showSkinsChanger(main)
+    current_menu_frame = menus.showSkinsChanger(main, checkPath())
     print("Going to skins changer")
 
 changerSkinsButton.configure(cursor="hand2")
