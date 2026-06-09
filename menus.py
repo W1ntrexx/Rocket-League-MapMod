@@ -6,7 +6,7 @@ import os
 import shutil
 from tkinter import filedialog
 import sys
-import psutil
+import subprocess
 
 SETTINGS_LINE_AUTOMATIC_SEARCH = 5
 SETTINGS_LINE_PATH = 6
@@ -140,11 +140,33 @@ def showTweaks(window, rl_path, curStatus):
         if messagebox.askyesno("BakkesMod Textures", "Do you wish to install the V1.0 BakkesMod Textures?"):
             if curStatus == "online":
                 if messagebox.askyesno("Hold on", "It seems that an instance of Rocket League or Epic Games is running. Modifying files currently could cause unwanted behaviour. Wish to continue?"):
-                    try:
-                        shutil.copytree("textures", texture_path, dirs_exist_ok=True)
-                        messagebox.showinfo("Horray", "Successfully applied textures")
-                    except:
-                        messagebox.showerror("Uh oh...", "Unable to apply textures.")
+                    return
+            else:
+                try:
+                    shutil.copytree("textures", texture_path, dirs_exist_ok=True)
+                    messagebox.showinfo("Horray", "Successfully applied textures")
+                except:
+                    messagebox.showerror("Uh oh...", "Unable to apply textures.")
+
+    def startWithOptions():
+        if determinePath(rl_path, SETTINGS_LINE_AUTOMATIC_SEARCH) == "":
+            messagebox.showerror("Uh oh...", "There is no RocketLeague Path selected.")
+            return
+        exePath = os.path.join(determinePath(rl_path, SETTINGS_LINE_AUTOMATIC_SEARCH), "Binaries", "Win64", "RocketLeague.exe")
+
+        rawArguments = startupEntry.get()
+        args = rawArguments.strip().split()
+
+        command = [exePath] + args
+
+        try:
+            subprocess.Popen(command)
+            messagebox.showinfo("Horray", "RocketLeague is launched!")
+        except:
+            print("unable to start")
+            messagebox.showerror("Uh oh...", "Unable to start RocketLeague.")
+
+
 
     
     tweaksFrame = ctk.CTkFrame(
@@ -334,6 +356,7 @@ def showTweaks(window, rl_path, curStatus):
     startupEntry.configure(border_color=borderColor, fg_color= buttonColor)
 
     launchButton.place(relx=0.8, rely=0.89, x=0, y=0, anchor="n")
+    launchButton.bind("<Button-1>", lambda e:startWithOptions())
     
     return tweaksFrame
 
@@ -343,7 +366,6 @@ def showSettings(window, rl_path):
         # .get() liefert 1 wenn angehakt, sonst 0
         current_state = automaticSearchCheckbox.get()
         
-        # Angenommen, das Checkbox-Setting soll in Zeile 7 eurer settings.txt stehen:
         editSettings(SETTINGS_LINE_AUTOMATIC_SEARCH, current_state)
         print(f"Checkbox-state {current_state} has been saved.")
     
@@ -461,7 +483,7 @@ def showSettings(window, rl_path):
         width=200,
         from_=1, to=10,
         number_of_steps=9,
-        command=lambda value: editSettings(SETTINGS_LINE_INTERVAL, str(value)) #speichert den Wert des Sliders in Zeile 8 der settings.txt
+        command=lambda value: editSettings(SETTINGS_LINE_INTERVAL, str(value))
     )
 
     intervalLabel = ctk.CTkLabel(
@@ -608,9 +630,19 @@ def showMapChanger(window, rl_path):
     def open_swap_popup(custom_map_name):
         popup = tk.Toplevel(window)
         popup.title("Swap Map")
-        popup.geometry("300x150")
+        popup.geometry("350x200")
         popup.configure(bg="#0b0f22")
-        label = tk.Label(popup, text=f"swapping in {custom_map_name}?", bg="#0b0f22", fg="white", font=("Arial", 10))
+        popup.resizable(False, False)
+        popup.grab_set()
+        
+        label = tk.Label(
+        popup, 
+        text=f"swapping in {custom_map_name}?",
+        bg="#0b0f22", 
+        fg="white", 
+        font=("Arial", 12)
+        )
+        
         label.pack(pady=20)
 
         freeplayMaps = get_freeplay_maps(rl_path)
@@ -669,41 +701,59 @@ def showSkinsChanger(window, rl_path):
     skinsChangerFrame = ctk.CTkFrame(
         window,
         width=400, height=400,
-        fg_color="#0b0f22", 
+        fg_color=bgColor, 
         corner_radius=0,
     )
-    skinsChangerFrame.place(x=200, y=0)
 
+    boostFrame = ctk.CTkFrame(
+        skinsChangerFrame,
+        width=400,
+        height=30,
+        fg_color=columnColor, 
+        corner_radius=0,
+    )
+    
     boosts = get_boosts(rl_path)
 
     boostLabel = ctk.CTkLabel(
         skinsChangerFrame,
         text="Boosts:",
+        fg_color=columnColor
     )
-    boostLabel.place(relx=0.5, rely=0.02, anchor="n")
-
+    
     swapToBoost = ctk.CTkComboBox(
         skinsChangerFrame,
         values=boosts,
         width=150,
     )
-    swapToBoost.set("Swap to...")
-    swapToBoost.place(relx=0.05, rely=0.08, anchor="nw")
 
     swapFromBoost = ctk.CTkComboBox(
         skinsChangerFrame,
         values=boosts,
         width=150,
     )
-    swapFromBoost.set("Swap from...")
-    swapFromBoost.place(relx=0.95, rely=0.08, anchor="ne")
 
     confirmBoostButton = ctk.CTkButton(
         skinsChangerFrame,
         text="Confirm",
         width=120,
     )
-    confirmBoostButton.place(relx=0.5, rely=0.16, anchor="n")
+
+    skinsChangerFrame.place(x=200, y=0)
+
+    boostFrame.place(x=0, y=0)
+
+    boostLabel.place(relx=0.23, rely=0, anchor="n")
+
+    confirmBoostButton.place(relx=0.5, rely=0.2, anchor="n")
+
+    swapToBoost.set("Swap to...")
+    swapToBoost.place(relx=0.05, rely=0.1, anchor="nw")
+    swapToBoost.configure(**COMBOBOX_SETTINGS)
+
+    swapFromBoost.set("Swap from...")
+    swapFromBoost.place(relx=0.95, rely=0.1, anchor="ne")
+    swapFromBoost.configure(**COMBOBOX_SETTINGS)
 
     return skinsChangerFrame
 
